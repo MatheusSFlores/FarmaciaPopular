@@ -1,4 +1,7 @@
         <?php
+include('config/database.php');
+include('config/existent-user.php');
+include('php/Dao/UsuarioDAO.php');
 
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["logButton"])) {
             $nome = $_POST["nome"];
