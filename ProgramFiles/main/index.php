@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>FPB - Início</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="css/favicon.ico" type="image/x-icon">
     <script src="https://kit.fontawesome.com/ed891ee09d.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/bootstrap/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </head>
 
 <header>
@@ -45,21 +45,17 @@
         </nav>
     </div>
 </header>
-
 <body>
-
 </body>
 
 <?php
-
-
 switch (@$_REQUEST['page']) {
 
     case "cadastro":
         include 'php/cadastro/cadastro.php';
         include('config/database.php');
-        include('config/existent-user.php');
-        include('php/Dao/UsuarioDAO.php');
+        // include('config/existent-user.php');
+        include('php/dao/UsuarioDAO.php');
         break;
 
     case "cadastro-cliente":
@@ -68,19 +64,21 @@ switch (@$_REQUEST['page']) {
     case "cadastro-medico":
         include 'php/cadastro/cad-med.php';
         include('config/database.php');
-        include('config/existent-user.php');
-        include('php/Dao/UsuarioDAO.php');
+      
+        include('php/dao/UsuarioDAO.php');
         break;
 
     case "cadastro-farmacia":
         include 'php/cadastro/cad-farm.php';
         include('config/database.php');
-        include('config/existent-user.php');
-        include('php/Dao/UsuarioDAO.php');
+      include 'php/classes/UserClass.php';
+        include('php/dao/UsuarioDAO.php');
         break;
 
     case "login":
-        include 'php/telas-users/login.php';
+        include 'php/telas-users/login.php'; 
+        include 'php/util/functionsLogin.php'; 
+        include 'php/dao/UsuarioDAO.php'; 
       
         break;
     case "index":
@@ -98,6 +96,7 @@ switch (@$_REQUEST['page']) {
     default:
     $_REQUEST['page'] = 'index';
 }
+
 
 ?>
 

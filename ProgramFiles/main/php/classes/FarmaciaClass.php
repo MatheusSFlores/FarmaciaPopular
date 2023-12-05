@@ -1,5 +1,5 @@
 <?php 
-    require_once('php/classes/UserClass.php');
+    require ('./UserClass.php');
     class Farmacia extends User {
         private int $idfarmacia;     
 

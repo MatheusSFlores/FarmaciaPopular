@@ -2,7 +2,6 @@
 
 $indexForm = true;
 include('config/database.php');
-include('config/existent-user.php');
 include('php/Dao/UsuarioDAO.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -26,12 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "senha" => $_POST["senha1"]
     );
 
-    if (userexistente($_POST["cpf"], $_POST["endereco"])) {
-        $usuarioDAO = new UsuarioDAO($pdo);
+    // if (userexistente($_POST["cpf"], $_POST["endereco"])) {
+        $usuarioDAO = new UsuarioDAO;
         $usuarioDAO->cadastro($dados);
         header('Location: index.php');
         exit;
-    }
+    // }
 }
 if ($indexForm) { ?>
     <form action="" method="post" class="password-form" onsubmit="return onSubmitForm(); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">

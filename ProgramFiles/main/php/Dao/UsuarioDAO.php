@@ -1,69 +1,107 @@
-<?php 
-include_once "config/database.php";
-include_once "php/classes/UserClass.php";
-class UsuarioDAO {
+<?php
+require_once(__DIR__ . '/../../config/database.php');
+// i: Integer/int (inteiro)
+// d: Double
+// s: String (texto/varchar)
+class UsuarioDAO
+{
+    private $conn;
 
-    private $pdo;
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
-    }
-    public function cadastro(array $dadosUsuario) {
-        $sql = "INSERT INTO usuarios (nome, cpf_cnpj, idade, endereco, email, permissao, senha) VALUES (:nome, :cpf_cnpj, :idade, :endereco, :email, :permissao, :senha)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":nome", $dadosUsuario["nome"]);
-        $stmt->bindValue(":cpf_cnpj", $dadosUsuario["cpf_cnpj"]);
-        $stmt->bindValue(":idade", $dadosUsuario["idade"]);
-        $stmt->bindValue(":endereco", $dadosUsuario["endereco"]);
-        $stmt->bindValue(":email", $dadosUsuario["email"]);
-        $stmt->bindValue(":permissao", $dadosUsuario["permissao"]);
-        $stmt->bindValue(":senha", $dadosUsuario["senha"]);
-        $stmt->execute();
-        return $this->pdo->lastInsertId();
-    }
-    public function atualizar(array $dados) {
-        $sql = "UPDATE usuarios SET nome = :nome, cpf_cnpj = :cpf_cnpj, idade = :idade, endereco = :endereco, email = :email, permissao = :permissao, senha = :senha WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":nome", $dados["nome"]);
-        $stmt->bindValue(":cpf_cnpj", $dados["cpf_cnpj"]);
-        $stmt->bindValue(":idade", $dados["idade"]);
-        $stmt->bindValue(":endereco", $dados["endereco"]);
-        $stmt->bindValue(":email", $dados["email"]);
-        $stmt->bindValue(":permissao", $dados["permissao"]);
-        $stmt->bindValue(":senha", $dados["senha"]);
-        $stmt->bindValue(":id", $dados["id"]);
-        $stmt->execute();
-        return $stmt->rowCount();
+    public function connect()
+    {
+        $this->conn = new mysqli(HOST, USER, PASS, BASE);
+
+        if ($this->conn->connect_error) {
+            die("Erro ao conectar ao banco de dados: " . $this->conn->connect_error);
+        }
     }
 
-    public function excluir($id) {
-        $sql = "DELETE FROM usuarios WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":id", $id);
+    public function cadastro(array $dadosUsuario)
+    {
+        $this->connect();
+
+        $sql = "INSERT INTO usuarios (nome, cpf_cnpj, idade, endereco, email, permissao, senha) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("sssssss", $dadosUsuario["nome"], $dadosUsuario["cpf_cnpj"], $dadosUsuario["idade"], $dadosUsuario["endereco"], $dadosUsuario["email"], $dadosUsuario["permissao"], $dadosUsuario["senha"]);
+
         $stmt->execute();
-        return $stmt->rowCount();
+
+        return $this->conn->insert_id;
     }
-    public function listar() {
+
+    public function atualizar(array $dados)
+    {
+        $this->connect();
+
+        $sql = "UPDATE usuarios SET nome = ?, cpf_cnpj = ?, idade = ?, endereco = ?, email = ?, permissao = ?, senha = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("sssssssi", $dados["nome"], $dados["cpf_cnpj"], $dados["idade"], $dados["endereco"], $dados["email"], $dados["permissao"], $dados["senha"], $dados["id"]);
+
+        $stmt->execute();
+
+        return $stmt->affected_rows;
+    }
+
+    public function excluir($id)
+    {
+        $this->connect();
+
+        $sql = "DELETE FROM usuarios WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("i", $id);
+
+        $stmt->execute();
+
+        return $stmt->affected_rows;
+    }
+
+    public function listar()
+    {
+        $this->connect();
+
         $sql = "SELECT * FROM usuarios";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->conn->query($sql);
+
+        $usuarios = $result->fetch_all(MYSQLI_ASSOC);
+
+        return $usuarios;
     }
 
-    public function buscarPorId($id) {
-        $sql = "SELECT * FROM usuarios WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":id", $id);
+    public function buscarPorId($id)
+    {
+        $this->connect();
+
+        $sql = "SELECT * FROM usuarios WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("i", $id);
+
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $stmt->fetch_assoc();
     }
-    public function buscarPorNomeECpf($nome, $cpf) {
-        $sql = "SELECT * FROM usuarios WHERE nome = :nome AND cpf_cnpj = :cpf";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':nome', $nome);
-        $stmt->bindValue(':cpf', $cpf);
+
+    public function buscarPorCpf($cpf)
+    {
+        $this->connect();
+
+        $sql = "SELECT * FROM usuarios WHERE cpf_cnpj = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $cpf);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch_assoc();
     }
 
+    public function __destruct()
+    {
+        if ($this->conn) {
+            $this->conn->close();
+        }
+    }
+    
 }
 ?>

@@ -23,12 +23,12 @@
             "senha" => $_POST["senha1"]
         );
 
-        if (userexistente($_POST["cpf"], $_POST["endereco"])) {
-            $usuarioDAO = new UsuarioDAO($pdo);
-            $usuarioDAO->cadastro($dados);
-            header('Location: index.php');
-            exit;
-        }
+        // if (userexistente($_POST["cpf"], $_POST["endereco"])) {
+        //     $usuarioDAO = new UsuarioDAO($pdo);
+        //     $usuarioDAO->cadastro($dados);
+        //     header('Location: index.php');
+        //     exit;
+        // }
     }
     if ($indexForm) { ?>
       <form action="" method="post" class="password-form" data-tipo-formulario="medico" onsubmit="return onSubmitForm(this); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">

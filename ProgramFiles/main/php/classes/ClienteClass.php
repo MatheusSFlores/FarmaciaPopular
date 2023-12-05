@@ -1,5 +1,5 @@
 <?php
-require_once('php/classes/UserClass.php');
+require ('./UserClass.php');
 class Cliente extends User
 {
         private int $idcliente;

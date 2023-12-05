@@ -1,52 +1,59 @@
-<?php 
-require_once "config/database.php";
+<?php
+require_once(__DIR__ . '/../../config/database.php');
 require_once "php/classes/ClienteClass.php";
-class ClienteDAO {
-    private $pdo;
+// i: Integer/int (inteiro)
+// d: Double
+// s: String (texto/varchar)
+class ClienteDAO
+{
+    private $conn;
 
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct(mysqli $conn)
+    {
+        $this->conn = $conn;
     }
 
-    public function cadastro(array $dados) {
-        $sql = "INSERT INTO clientes (idcliente, idusuario, retiradas, receitas) VALUES (NULL, :idusuario, :retiradas, :receitas)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":idusuario", $dados["idusuario"]);
-        $stmt->bindValue(":retiradas", $dados["retiradas"]);
-        $stmt->bindValue(":receitas", $dados["receitas"]);
+    public function cadastro(array $dados)
+    {
+        $sql = "INSERT INTO clientes (idcliente, idusuario, retiradas, receitas) VALUES (NULL, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $dados["idusuario"], $dados["retiradas"], $dados["receitas"]);
         $stmt->execute();
-        return $this->pdo->lastInsertId();
+        return $stmt->insert_id;
     }
 
-    public function atualizar(array $dados) {
-        $sql = "UPDATE clientes SET retiradas = :retiradas, receitas = :receitas WHERE idcliente = :idcliente";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":retiradas", $dados["retiradas"]);
-        $stmt->bindValue(":receitas", $dados["receitas"]);
-        $stmt->bindValue(":idcliente", $dados["idcliente"]);
+    public function atualizar(array $dados)
+    {
+        $sql = "UPDATE clientes SET retiradas = ?, receitas = ? WHERE idcliente = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $dados["retiradas"], $dados["receitas"], $dados["idcliente"]);
         $stmt->execute();
-        return $stmt->rowCount();
+        return $stmt->affected_rows;
     }
 
-    public function excluir($id) {
-        $sql = "DELETE FROM clientes WHERE idcliente = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":id", $id);
+    public function excluir($id)
+    {
+        $sql = "DELETE FROM clientes WHERE idcliente = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        return $stmt->rowCount();
+        return $stmt->affected_rows;
     }
-    
-    public function listar() {
+
+    public function listar()
+    {
         $sql = "SELECT * FROM clientes";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function buscarPorId($id) {
-        $sql = "SELECT * FROM clientes WHERE idcliente = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":id", $id);
+    public function buscarPorId($id)
+    {
+        $sql = "SELECT * FROM clientes WHERE idcliente = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->get_result()->fetch_assoc();
     }
 }
+?>

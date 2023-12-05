@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FPB - Farmacia</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="icon" href="../../css/favicon.ico" type="image/x-icon">
     <script src="https://kit.fontawesome.com/ed891ee09d.js" crossorigin="anonymous"></script>
@@ -20,87 +20,84 @@
 </header>
 
 <body>
-    <?php
-    require_once "../../config/database.php";
-    require_once "../classes/UserClass.php";
-    require_once "../Dao/UsuarioDAO.php";
-    require_once "../Dao/MedicamentoDAO.php";
-    session_start();
+<?php
+require_once "../../config/database.php";
+require_once "../Dao/UsuarioDAO.php";
+require_once "../Dao/MedicamentoDAO.php";
+require_once "../../php/utils/functionsLogin.php"; 
 
-    if (isset($_SESSION['username'])) {
-        $username = $_SESSION['username'];
-        $password = $_SESSION['password'];
-        $usuarioDAO = new UsuarioDAO($pdo);
-        $usuario = $usuarioDAO->buscarPorNomeECpf($username, $password);
+session_start();
+if (isset($_SESSION['username'])) {
+    $cpf = $_SESSION['cpf'];
+    $usuarioDAO = new UsuarioDAO($pdo);
+    $usuario = autenticarUsuario($cpf, $pdo);
 
-        $dadosUsuario = array(
+    if ($usuario) {
+        $dadosUsuario = [
             'id' => $usuario['id'],
-            'modalnome' => $usuario['nome'],
+            'modalnome' => $usuario['nome'], 
             'cpf' => $usuario['cpf_cnpj'],
             'idade' => $usuario['idade'],
             'endereco' => $usuario['endereco'],
             'email' => $usuario['email']
-        );
+        ];
     }
+}
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nome_medicamento = $_POST['nome_medicamento'];
+    $validade = $_POST['validade'];
+    $quantidade = $_POST['quantidade'];
+    $fornecedor = $_POST['fornecedor'];
 
+    if (isset($_FILES['imagem_medicamento'])) {
+        $arquivo = $_FILES["imagem_medicamento"];
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nome_medicamento = $_POST['nome_medicamento'];
-        $validade = $_POST['validade'];
-        $quantidade = $_POST['quantidade'];
-        $fornecedor = $_POST['fornecedor'];
+        if ($arquivo['error']) {
+            die("Falha ao enviar arquivo");
+        }
 
-        if (isset($_FILES['imagem_medicamento'])) {
-            $arquivo = $_FILES["imagem_medicamento"];
+        if ($arquivo['size'] > 2097152) {
+            die('Arquivo muito grande! O tamanho máximo é de 2MB.');
+        }
 
-            if ($arquivo['error']) {
-                die("Falha ao enviar arquivo");
-            }
+        $pasta = "../../css/images/medicamentos/";
+        $nomeArquivo = $arquivo['name'];
+        $novonomeArquivo = uniqid();
+        $extension = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
 
-            if ($arquivo['size'] > 2097152) {
-                die('Arquivo muito grande! O tamanho máximo é de 2MB.');
-            }
+        if ($extension != "jpg" && $extension != 'png') {
+            die('Formato de arquivo inválido. Por favor, escolha uma imagem no formato PNG ou JPG.');
+        }
 
-            $pasta = "../../css/images/medicamentos/";
-            $nomeArquivo = $arquivo['name'];
-            $novonomeArquivo = uniqid();
-            $extension = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+        $novonomeArquivoCompleto = $novonomeArquivo . "." . $extension;
 
-            if ($extension != "jpg" || $extension != 'png') {
+        $moove = move_uploaded_file($arquivo["tmp_name"], $pasta . $novonomeArquivoCompleto);
+        if ($moove) {
+            $dadosMedicamento = [
+                'nome' => $nome_medicamento,
+                'validade' => $validade,
+                'quantidade' => $quantidade,
+                'fornecedor' => $fornecedor,
+                'imagem' => $pasta . $novonomeArquivoCompleto,
+            ];
 
-            }
+            $medicamentoDAO = new MedicamentoDAO($pdo);
 
-            $novonomeArquivoCompleto = $novonomeArquivo . "." . $extension;
-
-            $moove = move_uploaded_file($arquivo["tmp_name"], $pasta . $novonomeArquivoCompleto);
-            if ($moove) {
-                // echo "<p>Arquivo enviado com sucesso.</a>";
-
-                $dadosMedicamento = [
-                    'nome' => $nome_medicamento,
-                    'validade' => $validade,
-                    'quantidade' => $quantidade,
-                    'fornecedor' => $fornecedor,
-                    'imagem' => $pasta . $novonomeArquivoCompleto,
-                ];
-
-                $medicamentoDAO = new MedicamentoDAO($pdo);
-
-                if ($medicamentoDAO->cadastro($dadosMedicamento)) {
-
-                } else {
-                    echo "Erro ao registrar o medicamento no banco de dados.";
-                }
+            if ($medicamentoDAO->cadastro($dadosMedicamento)) {
+                echo "Medicamento cadastrado com sucesso!";
             } else {
-                echo "Erro ao fazer upload da imagem.";
+                echo "Erro ao registrar o medicamento no banco de dados.";
             }
         } else {
-            echo "Por favor, envie uma imagem do medicamento.";
+            echo "Erro ao fazer upload da imagem.";
         }
+    } else {
+        echo "Por favor, envie uma imagem do medicamento.";
     }
+}
+?>
 
-    ?>
     <td>
         <p>
         <h1>Farmacia</h1>

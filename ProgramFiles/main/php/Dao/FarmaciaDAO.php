@@ -1,44 +1,50 @@
 <?php
-require_once "config/database.php";
+require_once(__DIR__ . '/../../config/database.php');
 require_once "php/classes/FarmaciaClass.php";
-class FarmaciaDAO {
+// i: Integer/int (inteiro)
+// d: Double
+// s: String (texto/varchar)
+class FarmaciaDAO
+{
+    private $conn;
 
-    private $pdo;
-
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct(mysqli $conn)
+    {
+        $this->conn = $conn;
     }
 
-public function cadastro(int $idUsuario) {
-    try {
-        $sql = "INSERT INTO farmacias (idusuario) VALUES (:idusuario)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":idusuario", $idUsuario);
-        $stmt->execute();
-        return $this->pdo->lastInsertId();
-    } catch (PDOException $e) {
-        throw new Exception("Erro ao cadastrar farmácia: " . $e->getMessage());
+    public function cadastro(int $idUsuario)
+    {
+            $sql = "INSERT INTO farmacias (idusuario) VALUES (?)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("i", $idUsuario);
+            $stmt->execute();
+            return $stmt->insert_id;
     }
-}
 
-    public function getAll() {
+    public function getAll()
+    {
         $sql = "SELECT * FROM farmacias";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getById($idfarmacia) {
-        $sql = "SELECT * FROM farmacias WHERE idfarmacia = :idfarmacia";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(":idfarmacia", $idfarmacia);
+    public function getById($idfarmacia)
+    {
+        $sql = "SELECT * FROM farmacias WHERE idfarmacia = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $idfarmacia);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->get_result()->fetch_assoc();
     }
-    public function delete($idfarmacia) {
-        $sql = "DELETE FROM farmacias WHERE idfarmacia = :idfarmacia";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(":idfarmacia", $idfarmacia);
+
+    public function delete($idfarmacia)
+    {
+        $sql = "DELETE FROM farmacias WHERE idfarmacia = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $idfarmacia);
         $stmt->execute();
     }
 }
+?>
+

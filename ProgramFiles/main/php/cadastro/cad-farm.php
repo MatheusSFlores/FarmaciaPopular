@@ -13,7 +13,7 @@
                 return false;
             }
          </script>';
-        $dados = array(
+         $dados = array(
             "nome" => $_POST["nome"],
             "cpf_cnpj" => $_POST["cnpj"],
             "idade" => 0,
@@ -23,19 +23,19 @@
             "senha" => $_POST["senha1"]
         );
 
-        if (userexistente($_POST["cpf"], $_POST["endereco"])) {
-            $usuarioDAO = new UsuarioDAO($pdo);
+        
+            $usuarioDAO = new UsuarioDAO;
             $usuarioDAO->cadastro($dados);
             header('Location: index.php');
             exit;
-        }
     }
     if ($indexForm) { ?>
-     <form action="" method="post" class="password-form" data-tipo-formulario="farmacia" onsubmit="return onSubmitForm(this); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">
+     <form action="?page=cad" method="post" class="password-form" data-tipo-formulario="farmacia" onsubmit="return onSubmitForm(this); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">
          <p>
          <h1>Cadastro de Farmacias</h1>
          </p>
          <table>
+         <input type="hidden" name="funcao" value="cadastrar-farma">
              <td>
                  <tr>
                      <td>
@@ -89,8 +89,8 @@
 
  <a href="?page=cadastro" class="menu-button2">Voltar</a>
 
- <script src="../../JavaScript/cpf.js"></script>
- <script src="../../JavaScript/email.js"></script>
- <script src="../../JavaScript/senha.js"></script>
- <script src="../../JavaScript/onsubmit.js"></script>
- <script src="../../JavaScript/validar-farm.js"></script>
+ <script src="../../js/funcao/cpf.js"></script>
+ <script src="../../js/funcao/email.js"></script>
+ <script src="../../js/funcao/senha.js"></script>
+ <script src="../../js/funcao/onsubmit.js"></script>
+ <script src="../../js/funcao/validar-farm.js"></script>

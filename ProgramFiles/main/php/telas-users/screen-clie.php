@@ -29,7 +29,7 @@
         $username = $_SESSION['username'];
         $password = $_SESSION['password'];
         $usuarioDAO = new UsuarioDAO($pdo);
-        $usuario = $usuarioDAO->buscarPorNomeECpf($username, $password);
+        $usuario = $usuarioDAO->buscarPorCpf($username, $password);
 
         $dadosUsuario = array(
             'id' => $usuario['id'],
