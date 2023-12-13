@@ -1,10 +1,12 @@
 <?php
 require_once(__DIR__ . '/../../config/database.php');
-require_once(__DIR__ . '/../util/functionsLogin.php');
-// include ('php/util/functionsLogin.php');
+
 session_start();
-if (isset($_POST['email']) || isset($_POST['senha'])) {
-    header('../util/functionsLogin.php');
+if (isset($_POST['email']) && isset($_POST['senha'])) {
+    $email = urlencode($_POST['email']);
+    $senha = urlencode($_POST['senha']);
+    header("Location:  php/util/functionsLogin.php?email=$email&senha=$senha");
+    exit();
 }
 ?>
 

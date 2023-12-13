@@ -90,11 +90,10 @@ class UsuarioDAO
 
         $sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $email);
-        $stmt->bind_param("i", $senha);
+        $stmt->bind_param("ss", $email, $senha);
         $stmt->execute();
 
-        return $stmt->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function __destruct()
