@@ -77,8 +77,6 @@ switch (@$_REQUEST['page']) {
 
     case "login":
         include 'php/telas-users/login.php'; 
-        include 'php/util/functionsLogin.php'; 
-        include 'php/dao/UsuarioDAO.php'; 
       
         break;
     case "index":
