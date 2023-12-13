@@ -84,13 +84,14 @@ class UsuarioDAO
         return $stmt->fetch_assoc();
     }
 
-    public function buscarPorCpf($cpf)
+    public function buscarPorCpf($email, $senha)
     {
         $this->connect();
 
-        $sql = "SELECT * FROM usuarios WHERE cpf_cnpj = ?";
+        $sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $cpf);
+        $stmt->bind_param("i", $email);
+        $stmt->bind_param("i", $senha);
         $stmt->execute();
 
         return $stmt->fetch_assoc();

@@ -6,9 +6,12 @@ require_once(__DIR__ . '/../Dao/UsuarioDAO.php');
 
     if (empty($_POST['CPF'])) {
 ?> <script>
-            alert('Informe um CPF!')
+            alert('Informe um Email')
         </script><?php
                 } else {
+                    ?> <script>
+            alert('1 else')
+        </script><?php
                     $cpf = $_POST['CPF'];
                     $usuarioDAO = new UsuarioDAO();
                     $usuario = $usuarioDAO->buscarPorCpf($cpf);
@@ -21,6 +24,9 @@ require_once(__DIR__ . '/../Dao/UsuarioDAO.php');
                     alert('Informe uma Senha!')
                 </script><?php
                         } else {
+                            ?> <script>
+            alert('2 else')
+        </script><?php
                             // Comparação de senha aqui
                             if (password_verify($senha, $usuario['senha'])) {
                                 // Senha correta
@@ -42,6 +48,9 @@ require_once(__DIR__ . '/../Dao/UsuarioDAO.php');
                                     default:
                                         break;
                                 }
+                                ?> <script>
+            alert('if mudança')
+        </script><?php
                             } else {
                             ?> <script>
                         alert('Senha incorreta!')
@@ -58,5 +67,5 @@ require_once(__DIR__ . '/../Dao/UsuarioDAO.php');
                         ?>
 
 <script>
-    alert('Informe uma Senha!')
+    alert('Não entrou em nada')
 </script>
