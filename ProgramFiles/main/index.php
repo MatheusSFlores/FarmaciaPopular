@@ -18,7 +18,7 @@
     <div class="container" id="nav-container">
         <nav class="navbar navbar-expand-lg fixed-top">
             <a href="?page=index" class="navbar-brand">
-                <img id="logo1" src="css/images/12.png" alt="">
+                <img id="logo1" src="css/image/site/12.png" alt="">
                 Farmacia Popular</a>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="O que desejas?" aria-label="Search">
@@ -45,6 +45,7 @@
         </nav>
     </div>
 </header>
+
 <body>
 </body>
 
@@ -53,32 +54,27 @@ switch (@$_REQUEST['page']) {
 
     case "cadastro":
         include 'php/cadastro/cadastro.php';
-        include('config/database.php');
-        // include('config/existent-user.php');
-        include('php/dao/UsuarioDAO.php');
         break;
 
     case "cadastro-cliente":
-        include('php/cadastro/cad-clie.php');
+        include 'php/cadastro/cad-clie.php';
         break;
     case "cadastro-medico":
         include 'php/cadastro/cad-med.php';
-        include('config/database.php');
-      
-        include('php/dao/UsuarioDAO.php');
         break;
 
     case "cadastro-farmacia":
         include 'php/cadastro/cad-farm.php';
-        include('config/database.php');
-      include 'php/classes/UserClass.php';
-        include('php/dao/UsuarioDAO.php');
         break;
 
     case "login":
-        include 'php/telas-users/login.php'; 
-      
+        include 'php/telas-users/login.php';
         break;
+
+    case "screen-farma":
+        include 'php/telas-users/screen-farm.php';
+        break;
+
     case "index":
         print "<h1>‎</h1>
         </p>
@@ -92,7 +88,7 @@ switch (@$_REQUEST['page']) {
         break;
 
     default:
-    $_REQUEST['page'] = 'index';
+        $_REQUEST['page'] = 'index';
 }
 
 

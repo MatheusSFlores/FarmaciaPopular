@@ -29,7 +29,8 @@ if (isset($_GET['email']) && isset($_GET['senha'])) {
                 header('Location: ../telas-users/screen-med.php?id=' . $usuario['id']);
                 break;
             case 4:
-                header('Location: ../telas-users/screen-farm.php?id=' . $usuario['id']);
+                header('Location: ../../index.php?page=screen-farma&userid='. $usuario['id']);
+
                 break;
             default:
             

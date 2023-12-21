@@ -1,6 +1,8 @@
  <?php
 
     $indexForm = true;
+    include('config/database.php');
+    include('php/Dao/UsuarioDAO.php');
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo '<script>
@@ -13,7 +15,7 @@
                 return false;
             }
          </script>';
-         $dados = array(
+        $dados = array(
             "nome" => $_POST["nome"],
             "cpf_cnpj" => $_POST["cnpj"],
             "idade" => 0,
@@ -23,19 +25,19 @@
             "senha" => $_POST["senha1"]
         );
 
-        
-            $usuarioDAO = new UsuarioDAO;
-            $usuarioDAO->cadastro($dados);
-            header('Location: index.php');
-            exit;
+
+        $usuarioDAO = new UsuarioDAO;
+        $usuarioDAO->cadastro($dados);
+        header('Location: index.php');
+        exit;
     }
     if ($indexForm) { ?>
-     <form action="?page=cad" method="post" class="password-form" data-tipo-formulario="farmacia" onsubmit="return onSubmitForm(this); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">
+     <form action="" method="post" class="password-form" data-tipo-formulario="farmacia" onsubmit="return onSubmitForm(this); validarCPF(document.getElementById('cpf').value); limparAvisoCPF();">
          <p>
          <h1>Cadastro de Farmacias</h1>
          </p>
          <table>
-         <input type="hidden" name="funcao" value="cadastrar-farma">
+             <input type="hidden" name="funcao" value="cadastrar-farma">
              <td>
                  <tr>
                      <td>

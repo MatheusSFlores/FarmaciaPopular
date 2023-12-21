@@ -81,7 +81,7 @@ class UsuarioDAO
 
         $stmt->execute();
 
-        return $stmt->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function buscarPorCpf($email, $senha)
