@@ -26,10 +26,10 @@ if (isset($_GET['email']) && isset($_GET['senha'])) {
                 header('Location: ../telas-users/screen-clie.php?id=' . $usuario['id']);
                 break;
             case 2:
-                header('Location: ../php/telas-users/screen-med.php?id=' . $usuario['id']);
+                header('Location: ../telas-users/screen-med.php?id=' . $usuario['id']);
                 break;
-            case 3:
-                header('Location: ../php/telas-users/screen-farm.php?id=' . $usuario['id']);
+            case 4:
+                header('Location: ../telas-users/screen-farm.php?id=' . $usuario['id']);
                 break;
             default:
             
