@@ -149,7 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <td><input type="submit" value="Adicionar Medicamento" class="account-button"></td>
             </tr>
         </table>
-        <p> <a href="?page=index" class="menu-button2">Voltar</a></p>
+        <p> <a href="?page=index 
+        " class="menu-button2">Voltar</a></p>
 
     </form>
 </body>
